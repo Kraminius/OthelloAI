@@ -12,13 +12,22 @@ import javafx.scene.layout.VBox;
 
 public class MainMenu extends VBox {
     private MenuController controller;
-    private HowToPlay howToPlayScreen;
+    private Popup howToPlayScreen;
     public MainMenu(MenuController controller){
         this.controller = controller;
         setStyle("-fx-background-color: " + Colors.DARK.getValue() + "; -fx-alignment: center");
 
         getChildren().add(createButtons());
-        howToPlayScreen = new HowToPlay();
+        howToPlayScreen = createHowToPlayScreen();
+    }
+
+    private Popup createHowToPlayScreen(){
+        howToPlayScreen = new Popup(600, 800);
+        howToPlayScreen.setTitle("How to play");
+        howToPlayScreen.setHeading("How to Play");
+        howToPlayScreen.setText("Bla bla bla bla bla bla bla bla bla bla \nbla bla bla bla\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBla");
+        howToPlayScreen.setChoices(new String[]{"Return To Menu"});
+        return howToPlayScreen;
     }
     private VBox createButtons(){
         VBox vBox = new VBox();
@@ -57,7 +66,7 @@ public class MainMenu extends VBox {
             controller.close();
         });
         howToPlayButton.setOnMousePressed(e->{
-            howToPlayScreen.show();
+            howToPlayScreen.showAndAwaitAnswer();
         });
 
 

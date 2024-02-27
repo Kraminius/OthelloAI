@@ -11,9 +11,14 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        stage.setTitle("Othello AI");
-        OthelloController controller = new OthelloController();
-        controller.launch(stage);
+        Stage othelloStage = new Stage(); //Must not be primary stage
+        othelloStage.setTitle("Othello AI");
+        boolean running = true;
+        while (running){
+            OthelloController controller = new OthelloController(othelloStage);
+            running = controller.show(othelloStage);
+        }
+
     }
 
     public static void main(String[] args) {
