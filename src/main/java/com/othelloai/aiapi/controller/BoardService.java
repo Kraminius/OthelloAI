@@ -22,7 +22,6 @@ public BoardService() {
 
     @GetMapping("/validMoves")
     public ResponseEntity<Integer> getValidMoves() {
-        boardRepository.getValidMoves();
         int test = 0;
         return ResponseEntity.ok().body(test);
     }

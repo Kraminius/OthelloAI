@@ -47,6 +47,7 @@ public class Board extends GridPane {
             }
         }
     }
+
     public Piece getPiece(int x, int y){
         return pieces[x][y];
     }
