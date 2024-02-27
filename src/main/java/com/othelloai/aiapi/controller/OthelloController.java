@@ -15,7 +15,7 @@ public class OthelloController {
     private final double SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 600;
     private final double PIECE_SIZE = 50;
     private final int BOARD_WIDTH = 10, BOARD_HEIGHT = 10;
-    private final ArrayList<int[][]> history = new ArrayList<>();
+    private final ArrayList<int[][]> history; //ToDo// Save this list to save a game.
     private int historyStep = 0;
 
     private BorderPane screen;
@@ -28,7 +28,8 @@ public class OthelloController {
     private Round inHand;
     private StackPane layers;
 
-    public OthelloController(Stage stage){
+    public OthelloController(Stage stage, ArrayList<int[][]> game){
+
         Config.setOthelloController(this);
         mainMenu(new Stage());
         layers = new StackPane();
@@ -44,7 +45,15 @@ public class OthelloController {
         layers.getChildren().add(screen);
         Scene scene = new Scene(layers, SCREEN_WIDTH, SCREEN_HEIGHT);
         stage.setScene(scene);
-        history.add(getBoard());
+
+        if(game != null){
+            history = game;
+            goForward();
+        }
+        else {
+            history = new ArrayList<>();
+            history.add(getBoard());
+        }
 
         scene.setOnMouseMoved(this::moveNodeInHand);
         stage.setOnCloseRequest(e->{
