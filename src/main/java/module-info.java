@@ -4,6 +4,8 @@ module com.othelloai.aiapi {
     requires spring.boot.autoconfigure;
     requires spring.boot;
     requires spring.context;
+    requires spring.beans;
+    requires spring.web;
 
 
     opens com.othelloai.aiapi to javafx.fxml;
