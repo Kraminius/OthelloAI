@@ -15,12 +15,16 @@ public class PieceKeeper extends Button {
     public PieceKeeper(boolean color, int amount, double pieceSize, OthelloController controller){
         this.controller = controller;
         this.pieceSize = pieceSize;
-        setStyle("-fx-content-display: top; -fx-border-radius: 0; -fx-background-radius: 0;-fx-background-color:" + Colors.DARKER.getValue());
+        setStyle("-fx-content-display: top;-fx-border-width: 2; -fx-border-color: "+Colors.DARKER.getValue()+"; -fx-background-radius: 0;-fx-background-color:" + Colors.DARKER.getValue());
         this.color = color;
         setAmount(amount);
         setPrefWidth(180);
         setPrefHeight(600);
         setOnAction(e -> clicked());
+    }
+    public void setTurn(boolean turn){
+        if(turn) setStyle(getStyle()+ ";-fx-border-color: " + Colors.WHITE.getValue());
+        else setStyle(getStyle()+ ";-fx-border-color: " + Colors.DARKER.getValue());
     }
 
     public void clicked(){

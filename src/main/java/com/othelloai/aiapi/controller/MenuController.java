@@ -19,6 +19,7 @@ public class MenuController {
         stage.setTitle("Othello Menu");
         stage.setScene(scene);
         this.stage = stage;
+        stage.setOnCloseRequest(e->System.exit(0));
         stage.showAndWait();
     }
     public void close(){
