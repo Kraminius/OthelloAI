@@ -23,6 +23,7 @@ public class OthelloController {
     private StackPane layers;
 
     public void launch(Stage stage){
+        mainMenu(new Stage());
         layers = new StackPane();
         board = new Board(BOARD_WIDTH, BOARD_HEIGHT, PIECE_SIZE, this);
         buttonBar = new ButtonBar();
@@ -39,6 +40,10 @@ public class OthelloController {
         stage.show();
 
         scene.setOnMouseMoved(this::moveNodeInHand);
+
+    }
+    private void mainMenu(Stage stage){
+        MenuController menu = new MenuController(stage);
 
     }
     private void moveNodeInHand(MouseEvent event){
