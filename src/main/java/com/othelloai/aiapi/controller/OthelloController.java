@@ -15,8 +15,9 @@ public class OthelloController {
     private final double SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 600;
     private final double PIECE_SIZE = 50;
     private final int BOARD_WIDTH = 10, BOARD_HEIGHT = 10;
-    private final ArrayList<int[][]> history; //ToDo// Save this list to save a game.
+    private ArrayList<int[][]> history; //ToDo// Save this list to save a game.
     private int historyStep = 0;
+    private Stage stage;
 
     private BorderPane screen;
     private Board board;
@@ -29,9 +30,13 @@ public class OthelloController {
     private StackPane layers;
 
     public OthelloController(Stage stage, ArrayList<int[][]> game){
-
+        this.stage = stage;
         Config.setOthelloController(this);
         mainMenu(new Stage());
+        initiateBoard(game);
+
+    }
+    private void initiateBoard(ArrayList<int[][]> game){
         layers = new StackPane();
         board = new Board(BOARD_WIDTH, BOARD_HEIGHT, PIECE_SIZE, this);
         buttonBar = new ButtonBar(this);
@@ -71,7 +76,6 @@ public class OthelloController {
 
         });
         updateTurn();
-
     }
 
     public boolean show(Stage stage){
@@ -184,10 +188,10 @@ public class OthelloController {
 
     public void goBack(){
         if(historyStep <= 0) return; //Only run if there are previous spaces.
-        System.out.println("Going Back");
         Piece[][] previous = getPiecesFromIntArr(history.get(--historyStep));
         board.setPieces(previous);
         updateTurn();
+        updateScore();
         buttonBar.showForward(true);
         if(historyStep <= 0) buttonBar.showBackward(false);
     }
@@ -196,10 +200,27 @@ public class OthelloController {
         Piece[][] next = getPiecesFromIntArr(history.get(++historyStep));
         board.setPieces(next);
         updateTurn();
+        updateScore();
         buttonBar.showBackward(true);
         if(historyStep >= history.size()-1) buttonBar.showForward(false); //Remove after
     }
     public void aiForfeit(){
-        //TODO// Current turn should forfeit instead of making a move.
+        Popup popup = new Popup(600, 400);
+        String winner = "";
+        String looser = "";
+        if(Config.getTurn()){
+            winner = "White";
+            looser = "Black";
+        }
+        else{
+            winner = "Black";
+            looser = "White";
+        }
+
+        popup.setTitle(winner + " Wins!");
+        popup.setHeading(winner + " Wins!");
+        popup.setText("Congratulations " + winner + " Wins!\n" + looser + " has forfeit.");
+        popup.setChoices(new String[]{"Return to Menu", "Study Game Instead"});
+        if(popup.showAndAwaitAnswer().equals("Return to Menu")) stage.close();
     }
 }

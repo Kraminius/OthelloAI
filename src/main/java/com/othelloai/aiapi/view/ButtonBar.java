@@ -18,7 +18,6 @@ public class ButtonBar extends VBox {
 
     public ButtonBar(OthelloController othelloController){
         this.controller = othelloController;
-        System.out.println(Colors.DARK_GREEN.getValue());
         setStyle("-fx-background-color: "+ Colors.DARK_GREEN.getValue() +"; -fx-border-color: "+ Colors.BLACK.getValue()+"; -fx-border-width: 0, 5, 0, 0");
         setPrefHeight(50);
         borderPane = new HBox();

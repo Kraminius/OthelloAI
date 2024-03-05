@@ -8,7 +8,6 @@ public class OthelloLogic {
         int x = piece.getPos()[0];
         int y = piece.getPos()[1];
         int possible = 0;
-        System.out.println("Pressed at: " + x + ", "+ y);
         if(checkNext(x, y, 1, 0, color, pieces, 0)) possible++; //Right
         if(checkNext(x, y, -1, 0, color, pieces, 0)) possible++; //Left
         if(checkNext(x, y, 0, 1, color, pieces, 0)) possible++; //Down
@@ -48,8 +47,6 @@ public class OthelloLogic {
     }
 
     private static void turnPiece(int x, int y, Piece[][] pieces){
-
-        System.out.println("Turning at: " + x + ", " + y);
         boolean color = pieces[x][y].getRound().getColor();
         pieces[x][y].setColor(!color);
     }
