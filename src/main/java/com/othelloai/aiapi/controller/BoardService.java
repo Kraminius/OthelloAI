@@ -46,6 +46,7 @@ public class BoardService {
     @GetMapping("/setChoice/{x}/{y}")
     public ResponseEntity<Boolean> setChoice(@PathVariable int x, @PathVariable int y) {
         boolean success = boardRepository.setChoice(x, y);
+        if(!success) return ResponseEntity.badRequest().body(success); //sends a 400 error to client
         return ResponseEntity.ok().body(success);
     }
 }
