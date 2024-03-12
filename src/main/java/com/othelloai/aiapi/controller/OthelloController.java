@@ -9,10 +9,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class OthelloController {
     private final double SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 600;
     private final double PIECE_SIZE = 50;
     private final int BOARD_WIDTH = 10, BOARD_HEIGHT = 10;
+    private ArrayList<int[][]> history; //ToDo// Save this list to save a game.
+    private int historyStep = 0;
+    private Stage stage;
 
     private BorderPane screen;
     private Board board;
@@ -24,12 +29,17 @@ public class OthelloController {
     private Round inHand;
     private StackPane layers;
 
-    public OthelloController(Stage stage){
+    public OthelloController(Stage stage, ArrayList<int[][]> game){
+        this.stage = stage;
         Config.setOthelloController(this);
         mainMenu(new Stage());
+        initiateBoard(game);
+
+    }
+    private void initiateBoard(ArrayList<int[][]> game){
         layers = new StackPane();
         board = new Board(BOARD_WIDTH, BOARD_HEIGHT, PIECE_SIZE, this);
-        buttonBar = new ButtonBar();
+        buttonBar = new ButtonBar(this);
         left = new PieceKeeper(false, BOARD_WIDTH*BOARD_HEIGHT/2-2, PIECE_SIZE, this);
         right = new PieceKeeper(true, BOARD_WIDTH*BOARD_HEIGHT/2-2, PIECE_SIZE, this);
         screen = new BorderPane();
@@ -41,6 +51,14 @@ public class OthelloController {
         Scene scene = new Scene(layers, SCREEN_WIDTH, SCREEN_HEIGHT);
         stage.setScene(scene);
 
+        if(game != null){
+            history = game;
+            goForward();
+        }
+        else {
+            history = new ArrayList<>();
+            history.add(getBoard());
+        }
 
         scene.setOnMouseMoved(this::moveNodeInHand);
         stage.setOnCloseRequest(e->{
@@ -58,7 +76,6 @@ public class OthelloController {
 
         });
         updateTurn();
-
     }
 
     public boolean show(Stage stage){
@@ -88,7 +105,17 @@ public class OthelloController {
         removeHand(true);
         updateScore();
         updateTurn();
+        history.add(getBoard());
+        historyStep++;
+        buttonBar.showForward(false);
+        buttonBar.showBackward(true);
+        removeFutureHistory();
         return true;
+    }
+    private void removeFutureHistory(){
+        while(historyStep < history.size()-1){
+            history.remove(history.size()-1);
+        }
     }
     private void updateScore(){
         scores = OthelloLogic.getScore(board.getPieces());
@@ -112,6 +139,14 @@ public class OthelloController {
         else{
             removeHand(false);
         }
+    }
+    public void skip(){
+        history.add(getBoard());
+        historyStep++;
+        buttonBar.showForward(false);
+        buttonBar.showBackward(true);
+        removeFutureHistory();
+        updateTurn();
     }
     public void removeHand(boolean placed){
         if(!placed){
@@ -143,8 +178,57 @@ public class OthelloController {
         }
         return toReturn;
     }
+    private Piece[][] getPiecesFromIntArr(int[][] array){
+        int width = array.length;
+        int height = array[0].length;
+        Piece[][] pieces = new Piece[width][];
+        for(int i = 0; i < width; i++){
+            pieces[i] = new Piece[height];
+            for(int j = 0; j < height; j++){
+                Piece piece = new Piece(i, j, PIECE_SIZE, this);
+                pieces[i][j] = piece;
+                if(array[i][j] == 1) piece.setColor(true);
+                else if(array[i][j] == 0) piece.setColor(false);
+            }
+        }
+        return pieces;
+    }
 
+    public void goBack(){
+        if(historyStep <= 0) return; //Only run if there are previous spaces.
+        Piece[][] previous = getPiecesFromIntArr(history.get(--historyStep));
+        board.setPieces(previous);
+        updateTurn();
+        updateScore();
+        buttonBar.showForward(true);
+        if(historyStep <= 0) buttonBar.showBackward(false);
+    }
+    public void goForward(){
+        if(historyStep >= history.size()-1) return; //Only run if there are forward spaces.
+        Piece[][] next = getPiecesFromIntArr(history.get(++historyStep));
+        board.setPieces(next);
+        updateTurn();
+        updateScore();
+        buttonBar.showBackward(true);
+        if(historyStep >= history.size()-1) buttonBar.showForward(false); //Remove after
+    }
     public void aiForfeit(){
-        //TODO// Current turn should forfeit instead of making a move.
+        Popup popup = new Popup(600, 400);
+        String winner = "";
+        String looser = "";
+        if(Config.getTurn()){
+            winner = "White";
+            looser = "Black";
+        }
+        else{
+            winner = "Black";
+            looser = "White";
+        }
+
+        popup.setTitle(winner + " Wins!");
+        popup.setHeading(winner + " Wins!");
+        popup.setText("Congratulations " + winner + " Wins!\n" + looser + " has forfeit.");
+        popup.setChoices(new String[]{"Return to Menu", "Study Game Instead"});
+        if(popup.showAndAwaitAnswer().equals("Return to Menu")) stage.close();
     }
 }
