@@ -212,8 +212,8 @@ public class OthelloController {
         buttonBar.showBackward(true);
         if(historyStep >= history.size()-1) buttonBar.showForward(false); //Remove after
     }
-    public void aiForfeit(){
-        Popup popup = new Popup(600, 400);
+    public void Forfeit(){
+        Popup popup = new Popup(600, 300);
         String winner = "";
         String looser = "";
         if(Config.getTurn()){
@@ -228,7 +228,13 @@ public class OthelloController {
         popup.setTitle(winner + " Wins!");
         popup.setHeading(winner + " Wins!");
         popup.setText("Congratulations " + winner + " Wins!\n" + looser + " has forfeit.");
-        popup.setChoices(new String[]{"Return to Menu", "Study Game Instead"});
-        if(popup.showAndAwaitAnswer().equals("Return to Menu")) stage.close();
+        popup.setChoices(new String[]{"Return to Menu", "Study Game Instead", "Restart Game"});
+        switch (popup.showAndAwaitAnswer()) {
+            case "Return to Menu" -> stage.close();
+            case "Restart Game" -> initiateBoard(null);
+        }
+    }
+    public void aiForfeit(){
+        initiateBoard(null);
     }
 }

@@ -1,6 +1,8 @@
 package com.othelloai.aiapi.view;
 
 import com.othelloai.aiapi.controller.OthelloController;
+import com.othelloai.aiapi.model.Config;
+import com.othelloai.aiapi.model.GameType;
 import com.othelloai.aiapi.view.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -16,6 +18,7 @@ public class PieceKeeper extends HBox {
     private StackPane pane;
     private OthelloController controller;
     private Button skip;
+    private Button forfeit;
     private VBox holder;
 
     public PieceKeeper(boolean color, int amount, double pieceSize, OthelloController controller){
@@ -23,27 +26,46 @@ public class PieceKeeper extends HBox {
         this.pieceSize = pieceSize;
         setStyle("-fx-content-display: top;-fx-border-width: 2; -fx-border-color: "+Colors.DARKER.getValue()+"; -fx-background-radius: 0;-fx-background-color:" + Colors.DARKER.getValue());
         this.color = color;
+        HBox buttons = new HBox();
         holder = new VBox();
         skip = new Button();
-        Label label = new Label("Skip");
-        skip.setGraphic(label);
-        label.setStyle("-fx-text-fill: " + Colors.WHITE.getValue() + "; -fx-font-weight: bold; -fx-font-size: 8");
-        label.setMaxHeight(20);
-        label.setScaleX(2);
-        label.setScaleY(2);
+        forfeit = new Button();
+        Label labelSkip = new Label("Skip");
+        Label labelForfeit = new Label("Forfeit");
+        skip.setGraphic(labelSkip);
+        forfeit.setGraphic(labelForfeit);
+        labelSkip.setStyle("-fx-text-fill: " + Colors.WHITE.getValue() + "; -fx-font-weight: bold; -fx-font-size: 6");
+        labelSkip.setMaxHeight(20);
+        labelSkip.setScaleX(2);
+        labelSkip.setScaleY(2);
+        labelForfeit.setStyle("-fx-text-fill: " + Colors.WHITE.getValue() + "; -fx-font-weight: bold; -fx-font-size: 6");
+        labelForfeit.setMaxHeight(20);
+        labelForfeit.setScaleX(2);
+        labelForfeit.setScaleY(2);
         skip.setPrefWidth(100);
         skip.setMaxHeight(20);
-        holder.getChildren().add(skip);
+        forfeit.setPrefWidth(100);
+        forfeit.setMaxHeight(20);
+        buttons.getChildren().addAll(skip, forfeit);
+        buttons.setSpacing(5);
+        holder.getChildren().add(buttons);
         holder.setFillWidth(true);
-        skip.setTranslateY(10);
+        buttons.setTranslateY(10);
         skip.setStyle("-fx-background-color: " + Colors.DARK.getValue() + "; -fx-border-color: " + Colors.DARKER.getValue());
+        forfeit.setStyle("-fx-background-color: " + Colors.DARK.getValue() + "; -fx-border-color: " + Colors.DARKER.getValue());
         skip.setOnAction(e->skipPressed());
+        forfeit.setOnAction(e->forfeitPressed());
         getChildren().add(holder);
         setAmount(amount);
-        setPrefWidth(180);
+        setPrefWidth(220);
         setPrefHeight(600);
         setAlignment(Pos.CENTER);
         setOnMouseClicked(e -> clicked());
+
+        switch (Config.getGameType()){
+            case AI_VS_AI -> setDisable(true);
+            case PLAYER_VS_AI -> {if(color) setDisable(true);}
+        }
 
 
 
@@ -53,22 +75,33 @@ public class PieceKeeper extends HBox {
             setStyle(getStyle()+ ";-fx-border-color: " + Colors.WHITE.getValue());
             skip.setStyle(getStyle()+ ";-fx-border-color: " + Colors.WHITE.getValue());
             skip.setDisable(false);
+            forfeit.setStyle(getStyle()+ ";-fx-border-color: " + Colors.WHITE.getValue());
+            forfeit.setDisable(false);
         }
         else{
             setStyle(getStyle()+ ";-fx-border-color: " + Colors.DARKER.getValue());
             skip.setStyle(getStyle()+ ";-fx-border-color: " + Colors.DARKER.getValue());
             skip.setDisable(true);
+            forfeit.setStyle(getStyle()+ ";-fx-border-color: " + Colors.DARKER.getValue());
+            forfeit.setDisable(true);
         }
     }
     private void skipPressed(){
         Popup popup = new Popup(600, 200);
         popup.setTitle("Skip?");
-        popup.setHeading("Sure you want to skip?");
+        popup.setHeading("Are you sure you want to skip?");
         popup.setText("You can only skip your turn, by the rules of Othello if you can't place any pieces.");
         popup.setChoices(new String[]{"Skip", "Cancel"});
         if(popup.showAndAwaitAnswer().equals("Skip")) controller.skip();
     }
-
+    private void forfeitPressed(){
+        Popup popup = new Popup(600, 200);
+        popup.setTitle("Forfeit?");
+        popup.setHeading("Are you sure you want to forfeit?");
+        popup.setText("If you forfeit, the game ends and you loose.");
+        popup.setChoices(new String[]{"Forfeit", "Cancel"});
+        if(popup.showAndAwaitAnswer().equals("Forfeit")) controller.Forfeit();
+    }
     public void clicked(){
         controller.pieceKeeperClicked(color);
     }
