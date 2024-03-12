@@ -17,6 +17,7 @@ public class BoardRepository {
     public void forfeit(){
         Config.getController().aiForfeit();
     }
+    public void skipTurn() {Config.getController().skip();}
     public String getGameType(){
         return Config.getGameType().toString();
     }

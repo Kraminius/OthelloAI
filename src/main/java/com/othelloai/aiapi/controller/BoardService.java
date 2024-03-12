@@ -17,6 +17,7 @@ public class BoardService {
         int[][] board = boardRepository.getBoard();
         return ResponseEntity.ok().body(board);
     }
+
     @GetMapping("/score")
     public ResponseEntity<int[]> getScore() {
         int[] score = boardRepository.getScore();
@@ -25,6 +26,11 @@ public class BoardService {
     @GetMapping("/forfeit")
     public ResponseEntity<Void> forfeit() {
         boardRepository.forfeit();
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/skipTurn")
+    public ResponseEntity<Void> skipTurn() {
+        boardRepository.skipTurn();
         return ResponseEntity.ok().build();
     }
     @GetMapping("/gameType")

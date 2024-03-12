@@ -140,6 +140,14 @@ public class OthelloController {
             removeHand(false);
         }
     }
+    public void skip(){
+        history.add(getBoard());
+        historyStep++;
+        buttonBar.showForward(false);
+        buttonBar.showBackward(true);
+        removeFutureHistory();
+        updateTurn();
+    }
     public void removeHand(boolean placed){
         if(!placed){
             if(inHand.getColor()){
