@@ -1,9 +1,12 @@
 package com.othelloai.aiapi.controller;
 
+import com.othelloai.aiapi.model.BoardResponse;
+import com.othelloai.aiapi.model.Config;
 import com.othelloai.aiapi.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.google.gson.Gson;
 
 @RestController
 public class BoardService {
@@ -13,9 +16,17 @@ public class BoardService {
         this.boardRepository = boardRepository;
     }
     @GetMapping("/board")
-    public ResponseEntity<int[][]> getBoard() {
+    public ResponseEntity<String> getBoard() {
+        System.out.println("Something");
+        System.out.println(boardRepository.getBoard().toString());
         int[][] board = boardRepository.getBoard();
-        return ResponseEntity.ok().body(board);
+        System.out.println(boardRepository.getBoard().toString());
+        Gson gson = new Gson();
+        boolean turn = Config.getTurn();
+        BoardResponse boardResponse = new BoardResponse(board, turn);
+        String json = gson.toJson(boardResponse);
+        System.out.println("THIS IS MY JSON: " + json);
+        return ResponseEntity.ok().body(json);
     }
 
     @GetMapping("/score")

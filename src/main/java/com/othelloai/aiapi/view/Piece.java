@@ -67,5 +67,17 @@ public class Piece extends StackPane {
 
     }
 
-
+    @Override
+    public String toString() {
+        return "Piece{" +
+                "DEFAULT='" + DEFAULT + '\'' +
+                ", HOVER='" + HOVER + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                ", size=" + size +
+                ", vBox=" + vBox +
+                ", round=" + round +
+                ", controller=" + controller +
+                '}';
+    }
 }

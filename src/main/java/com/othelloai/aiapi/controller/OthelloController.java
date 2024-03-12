@@ -1,5 +1,6 @@
 package com.othelloai.aiapi.controller;
 
+import com.othelloai.aiapi.model.BoardResponse;
 import com.othelloai.aiapi.model.Config;
 import com.othelloai.aiapi.model.OthelloLogic;
 import com.othelloai.aiapi.view.*;
@@ -9,7 +10,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class OthelloController {
     private final double SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 600;
@@ -18,6 +21,8 @@ public class OthelloController {
     private ArrayList<int[][]> history; //ToDo// Save this list to save a game.
     private int historyStep = 0;
     private Stage stage;
+
+
 
     private BorderPane screen;
     private Board board;
@@ -176,6 +181,10 @@ public class OthelloController {
                 else toReturn[i][j] = -1;
             }
         }
+
+        System.out.println("ge");
+        System.out.println(Arrays.deepToString(toReturn));
+        System.out.println("he");
         return toReturn;
     }
     private Piece[][] getPiecesFromIntArr(int[][] array){
@@ -230,5 +239,27 @@ public class OthelloController {
         popup.setText("Congratulations " + winner + " Wins!\n" + looser + " has forfeit.");
         popup.setChoices(new String[]{"Return to Menu", "Study Game Instead"});
         if(popup.showAndAwaitAnswer().equals("Return to Menu")) stage.close();
+    }
+
+    @Override
+    public String toString() {
+        return "OthelloController{" +
+                "SCREEN_WIDTH=" + SCREEN_WIDTH +
+                ", SCREEN_HEIGHT=" + SCREEN_HEIGHT +
+                ", PIECE_SIZE=" + PIECE_SIZE +
+                ", BOARD_WIDTH=" + BOARD_WIDTH +
+                ", BOARD_HEIGHT=" + BOARD_HEIGHT +
+                ", history=" + history +
+                ", historyStep=" + historyStep +
+                ", stage=" + stage +
+                ", screen=" + screen +
+                ", board=" + board +
+                ", buttonBar=" + buttonBar +
+                ", left=" + left +
+                ", right=" + right +
+                ", scores=" + Arrays.toString(scores) +
+                ", inHand=" + inHand +
+                ", layers=" + layers +
+                '}';
     }
 }

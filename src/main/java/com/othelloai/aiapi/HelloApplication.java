@@ -22,6 +22,10 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        launchApplication(args);
+    }
+
+    public static void launchApplication(String[] args) {
+        launch(args);
     }
 }
