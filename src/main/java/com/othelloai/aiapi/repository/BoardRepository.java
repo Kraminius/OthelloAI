@@ -19,7 +19,7 @@ public class BoardRepository {
     public void forfeit(){
         Config.getController().aiForfeit();
     }
-    public void skipTurn() {Config.getController().skip();}
+    public void skipTurn(boolean player, Callback callback) {Config.getController().skipTurnAI(player, callback);}
     public String getGameType(){
         return Config.getGameType().toString();
     }

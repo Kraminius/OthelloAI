@@ -49,9 +49,23 @@ public class BoardService {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/skipTurn")
-    public ResponseEntity<Void> skipTurn() {
-        boardRepository.skipTurn();
+    @GetMapping("/skipTurn/{player}")
+    public ResponseEntity<Void> skipTurn(@PathVariable("player") boolean player) {
+        DeferredResult<ResponseEntity<Boolean>> deferredResult = new DeferredResult<>();
+
+        Callback callback = new Callback() {
+            @Override
+            public void onSuccess() {
+                deferredResult.setResult(ResponseEntity.ok(true));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                System.err.println("Operation failed: " + e.getMessage());
+
+            }
+        };
+        boardRepository.skipTurn(player, callback);
         return ResponseEntity.ok().build();
     }
 

@@ -81,7 +81,9 @@ public class OthelloController {
             }
 
         });
-        updateTurn();
+        Config.setTurn(false);
+        left.setTurn(!Config.getTurn());
+        right.setTurn(Config.getTurn());
     }
 
     public boolean show(Stage stage){
@@ -167,10 +169,34 @@ public class OthelloController {
         inHand = null;
     }
 
+    /**
+     * Specific method for skipping turn as AI, as we need to do callback in async response when updating JavaFX, as it can't
+     * be done from a non JavaFX thread.
+     * @param player
+     * @param callback
+     */
+    public void skipTurnAI(boolean player, Callback callback){
+        Platform.runLater(() -> {
+            try{
+                if(Config.getTurn() == player) return;
+                history.add(getBoard());
+                historyStep++;
+                buttonBar.showForward(false);
+                buttonBar.showBackward(true);
+                removeFutureHistory();
+                updateTurn();
+                callback.onSuccess();
+            } catch (Exception e){
+                callback.onError(e);
+
+            }
+        });
+    }
+
     public void setChoice(int x, int y, boolean player,  Callback callback) {
         Platform.runLater(() -> {
             try {
-                if(Config.getTurn() != player) return;
+                if(Config.getTurn() == player) return;
                 Piece piece = board.getPieces()[x][y];
                 if (piece.isColored() || !OthelloLogic.canPlaceAt(board.getPieces(), piece, Config.getTurn())) {
                     callback.onError(new IllegalStateException("Invalid move"));
