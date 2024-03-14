@@ -3,18 +3,26 @@ package com.othelloai.aiapi.controller;
 import com.othelloai.aiapi.model.BoardResponse;
 import com.othelloai.aiapi.model.Config;
 import com.othelloai.aiapi.repository.BoardRepository;
+import javafx.application.Platform;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
+import org.springframework.web.context.request.async.DeferredResult;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class BoardService {
     private final BoardRepository boardRepository;
+
     @Autowired
     public BoardService(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
     }
+
     @GetMapping("/board")
     public ResponseEntity<String> getBoard() {
         System.out.println("Something");
@@ -34,30 +42,53 @@ public class BoardService {
         int[] score = boardRepository.getScore();
         return ResponseEntity.ok().body(score);
     }
+
     @GetMapping("/forfeit")
     public ResponseEntity<Void> forfeit() {
         boardRepository.forfeit();
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/skipTurn")
     public ResponseEntity<Void> skipTurn() {
         boardRepository.skipTurn();
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/gameType")
     public ResponseEntity<String> getGameType() {
         String gameType = boardRepository.getGameType();
         return ResponseEntity.ok().body(gameType);
     }
+
     @GetMapping("/turn")
     public ResponseEntity<Boolean> getTurn() {
         boolean turn = boardRepository.getTurn();
         return ResponseEntity.ok().body(turn);
     }
-    @GetMapping("/setChoice/{x}/{y}")
-    public ResponseEntity<Boolean> setChoice(@PathVariable int x, @PathVariable int y) {
-        boolean success = boardRepository.setChoice(x, y);
-        if(!success) return ResponseEntity.badRequest().body(success); //sends a 400 error to client
-        return ResponseEntity.ok().body(success);
+
+    @GetMapping("/setChoice/{x}/{y}/{player}")
+    public DeferredResult<ResponseEntity<Boolean>> setChoice(@PathVariable("x") int x, @PathVariable("y") int y, @PathVariable("player") boolean player) {
+        DeferredResult<ResponseEntity<Boolean>> deferredResult = new DeferredResult<>();
+
+        Callback callback = new Callback() {
+            @Override
+            public void onSuccess() {
+                deferredResult.setResult(ResponseEntity.ok(true));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Log the exception or handle it as needed
+                System.err.println("Operation failed: " + e.getMessage());
+                deferredResult.setResult(ResponseEntity.badRequest().body(false));
+            }
+        };
+
+        boardRepository.setChoice(x, y, player, callback);
+
+        return deferredResult;
     }
+
+
 }

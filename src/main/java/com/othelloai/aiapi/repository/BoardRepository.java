@@ -1,6 +1,8 @@
 package com.othelloai.aiapi.repository;
 
+import com.othelloai.aiapi.controller.Callback;
 import com.othelloai.aiapi.model.Config;
+import javafx.application.Platform;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,8 +26,7 @@ public class BoardRepository {
     public boolean getTurn() {
         return Config.getTurn();
     }
-    public boolean setChoice(int x, int y) {
-        return Config.getController().aiPlace(x, y);
+    public void setChoice(int x, int y, boolean player, Callback callback) {
+        Config.getController().setChoice(x, y, player, callback);
     }
-
 }

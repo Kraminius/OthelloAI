@@ -4,6 +4,7 @@ import com.othelloai.aiapi.model.BoardResponse;
 import com.othelloai.aiapi.model.Config;
 import com.othelloai.aiapi.model.OthelloLogic;
 import com.othelloai.aiapi.view.*;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -17,7 +18,7 @@ import java.util.Arrays;
 public class OthelloController {
     private final double SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 600;
     private final double PIECE_SIZE = 50;
-    private final int BOARD_WIDTH = 10, BOARD_HEIGHT = 10;
+    private final int BOARD_WIDTH = 8, BOARD_HEIGHT = 8;
     private ArrayList<int[][]> history; //ToDo// Save this list to save a game.
     private int historyStep = 0;
     private Stage stage;
@@ -165,9 +166,33 @@ public class OthelloController {
         layers.getChildren().remove(inHand);
         inHand = null;
     }
-    public boolean aiPlace(int x, int y){
-        return pieceClicked(board.getPieces()[x][y]);
+
+    public void setChoice(int x, int y, boolean player,  Callback callback) {
+        Platform.runLater(() -> {
+            try {
+                if(Config.getTurn() != player) return;
+                Piece piece = board.getPieces()[x][y];
+                if (piece.isColored() || !OthelloLogic.canPlaceAt(board.getPieces(), piece, Config.getTurn())) {
+                    callback.onError(new IllegalStateException("Invalid move"));
+                    return;
+                }
+
+                piece.setColor(Config.getTurn());
+                updateScore();
+                updateTurn();
+                history.add(getBoard());
+                historyStep++;
+                buttonBar.showForward(false);
+                buttonBar.showBackward(true);
+                removeFutureHistory();
+
+                callback.onSuccess();
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
     }
+
     public int[][] getBoard(){
         Piece[][] pieces = board.getPieces();
         int[][] toReturn = new int[pieces.length][];
@@ -175,7 +200,7 @@ public class OthelloController {
             toReturn[i] = new int[pieces[i].length];
             for(int j = 0; j < pieces[i].length; j++){
                 if(pieces[i][j].isColored()){
-                    if(pieces[i][j].getRound().getColor()) toReturn[i][j] = 1;
+                    if(pieces[i][j].getRound().getColor()) toReturn[i][j]   = 1;
                     else toReturn[i][j] = 0;
                 }
                 else toReturn[i][j] = -1;
