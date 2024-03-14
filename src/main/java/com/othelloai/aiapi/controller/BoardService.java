@@ -1,18 +1,13 @@
 package com.othelloai.aiapi.controller;
 
+import com.google.gson.Gson;
 import com.othelloai.aiapi.model.BoardResponse;
 import com.othelloai.aiapi.model.Config;
 import com.othelloai.aiapi.repository.BoardRepository;
-import javafx.application.Platform;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.google.gson.Gson;
 import org.springframework.web.context.request.async.DeferredResult;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 public class BoardService {
@@ -75,10 +70,10 @@ public class BoardService {
         return ResponseEntity.ok().body(gameType);
     }
 
-    @GetMapping("/turn")
-    public ResponseEntity<Boolean> getTurn() {
+    @GetMapping("/turn/{player}")
+    public ResponseEntity<Boolean> getTurn(@PathVariable("player") boolean player) {
         boolean turn = boardRepository.getTurn();
-        return ResponseEntity.ok().body(turn);
+        return ResponseEntity.ok().body(turn == player);
     }
 
     @GetMapping("/setChoice/{x}/{y}/{player}")
