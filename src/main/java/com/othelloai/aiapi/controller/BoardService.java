@@ -70,8 +70,8 @@ public class BoardService {
         return ResponseEntity.ok().body(gameType);
     }
 
-    @GetMapping("/turn/{player}")
-    public ResponseEntity<Boolean> getTurn(@PathVariable("player") boolean player) {
+    @GetMapping("/turn")
+    public ResponseEntity<Boolean> getTurn(boolean player) {
         boolean turn = boardRepository.getTurn();
         return ResponseEntity.ok().body(turn == player);
     }
@@ -79,6 +79,7 @@ public class BoardService {
     @GetMapping("/setChoice/{x}/{y}/{player}")
     public DeferredResult<ResponseEntity<Boolean>> setChoice(@PathVariable("x") int x, @PathVariable("y") int y, @PathVariable("player") boolean player) {
         DeferredResult<ResponseEntity<Boolean>> deferredResult = new DeferredResult<>();
+
 
         Callback callback = new Callback() {
             @Override
