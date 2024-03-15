@@ -76,6 +76,16 @@ public class BoardService {
         return ResponseEntity.ok().body(turn == player);
     }
 
+    @PostMapping("/AIStatus/{i}/{total}")
+    public ResponseEntity<String> getStatusFromAI(@PathVariable("i") int i, @PathVariable("total") int total){
+        int from = i;
+        int to = total;
+
+
+
+        return ResponseEntity.ok().body("Thanks bro");
+    }
+
     @GetMapping("/setChoice/{x}/{y}/{player}")
     public DeferredResult<ResponseEntity<Boolean>> setChoice(@PathVariable("x") int x, @PathVariable("y") int y, @PathVariable("player") boolean player) {
         DeferredResult<ResponseEntity<Boolean>> deferredResult = new DeferredResult<>();
