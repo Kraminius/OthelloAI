@@ -9,7 +9,8 @@ import javafx.scene.layout.VBox;
 public class Piece extends StackPane {
     private final String
             DEFAULT = "-fx-background-radius: 3;-fx-background-color: " + Colors.GREEN.getValue() + ";",
-            HOVER = "-fx-background-radius: 3; -fx-background-color:" + Colors.DARK_GREEN.getValue();
+            HOVER = "-fx-background-radius: 3; -fx-background-color:" + Colors.DARK_GREEN.getValue(),
+            MARKED = "-fx-background-radius: 3; -fx-background-color:" + Colors.YELLOW.getValue();
     private int x;
     private int y;
 
@@ -42,6 +43,10 @@ public class Piece extends StackPane {
         vBox.setOnMouseExited(Event::consume);
         vBox.setOnMouseClicked(Event::consume);
         vBox.setStyle(DEFAULT);
+    }
+    public void mark(boolean toMark){
+        if(toMark) vBox.setStyle(MARKED);
+        else vBox.setStyle(DEFAULT);
     }
 
     public int[] getPos(){

@@ -22,6 +22,7 @@ public class OthelloController {
     private ArrayList<int[][]> history; //ToDo// Save this list to save a game.
     private int historyStep = 0;
     private Stage stage;
+    private Piece lastPlaced = null;
 
 
 
@@ -99,6 +100,11 @@ public class OthelloController {
         inHand.setTranslateX(event.getX()-SCREEN_WIDTH/2);
         inHand.setTranslateY(event.getY()-SCREEN_HEIGHT/2);
     }
+    private void updateLast(Piece piece){
+        if(lastPlaced != null) lastPlaced.mark(false);
+        lastPlaced = piece;
+        lastPlaced.mark(true);
+    }
     private void updateTurn(){
         Config.setTurn(!Config.getTurn());
         left.setTurn(!Config.getTurn());
@@ -117,6 +123,7 @@ public class OthelloController {
         historyStep++;
         buttonBar.showForward(false);
         buttonBar.showBackward(true);
+        updateLast(piece);
         removeFutureHistory();
         return true;
     }
@@ -206,6 +213,7 @@ public class OthelloController {
                 piece.setColor(Config.getTurn());
                 updateScore();
                 updateTurn();
+                updateLast(piece);
                 history.add(getBoard());
                 historyStep++;
                 buttonBar.showForward(false);

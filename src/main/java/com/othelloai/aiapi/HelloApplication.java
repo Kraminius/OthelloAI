@@ -18,7 +18,6 @@ public class HelloApplication extends Application {
             OthelloController controller = new OthelloController(othelloStage, null); //ToDo// Implement a loader and saver of previous games. feeding an ArrayList<int[][]> here will display a previous game.
             running = controller.show(othelloStage);
         }
-
     }
 
     public static void main(String[] args) {

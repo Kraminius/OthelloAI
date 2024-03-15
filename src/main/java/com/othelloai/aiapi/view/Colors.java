@@ -7,6 +7,7 @@ public enum Colors {
     DARKER("#2a3535"),
     BLACK("#202020"),
     WHITE("#eeeeee"),
+    YELLOW("#8B8000"),
     ;
 
     private final String value;
