@@ -2,16 +2,23 @@ package com.othelloai.aiapi.view;
 
 import com.othelloai.aiapi.controller.OthelloController;
 import com.othelloai.aiapi.model.Config;
-import com.othelloai.aiapi.model.GameType;
-import com.othelloai.aiapi.view.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import javax.imageio.ImageIO;
+import java.net.URL;
+
+
 public class PieceKeeper extends HBox {
+    private final String aiStyle = "-fx-content-display: top;-fx-border-width: 2; -fx-border-color: "+Colors.DARKER.getValue()+"; -fx-background-radius: 0;-fx-background-image: url('../../../../../resources/images/circuitBoard.png'); -fx-background-repeat: stretch; -fx-background-size: 1000 700; -fx-background-position: center center;";
+    private final String defaultStyle = "-fx-content-display: top;-fx-border-width: 2; -fx-border-color: "+Colors.DARKER.getValue()+"; -fx-background-radius: 0;-fx-background-color:" + Colors.DARKER.getValue();
+
     private int amount;
     private boolean color;
     private double pieceSize;
@@ -20,11 +27,14 @@ public class PieceKeeper extends HBox {
     private Button skip;
     private Button forfeit;
     private VBox holder;
+    private StackPane stackPane;
 
     public PieceKeeper(boolean color, int amount, double pieceSize, OthelloController controller){
+        stackPane = new StackPane();
+        HBox background = new HBox();
+        getChildren().add(stackPane);
         this.controller = controller;
         this.pieceSize = pieceSize;
-        setStyle("-fx-content-display: top;-fx-border-width: 2; -fx-border-color: "+Colors.DARKER.getValue()+"; -fx-background-radius: 0;-fx-background-color:" + Colors.DARKER.getValue());
         this.color = color;
         HBox buttons = new HBox();
         holder = new VBox();
@@ -55,20 +65,49 @@ public class PieceKeeper extends HBox {
         forfeit.setStyle("-fx-background-color: " + Colors.DARK.getValue() + "; -fx-border-color: " + Colors.DARKER.getValue());
         skip.setOnAction(e->skipPressed());
         forfeit.setOnAction(e->forfeitPressed());
-        getChildren().add(holder);
+        background.getChildren().add(holder);
         setAmount(amount);
+        background.setPrefWidth(220);
         setPrefWidth(220);
+        background.setPrefHeight(600);
         setPrefHeight(600);
         setAlignment(Pos.CENTER);
+        background.setPrefWidth(220);
+        setAlignment(Pos.CENTER);
         setOnMouseClicked(e -> clicked());
-
+        background.setPrefWidth(220);
+        setOnMouseClicked(e -> clicked());
         switch (Config.getGameType()){
             case AI_VS_AI -> setDisable(true);
             case PLAYER_VS_AI -> {if(color) setDisable(true);}
         }
+        setStyle(defaultStyle);
 
+        setAIBackground();
+        stackPane.getChildren().add(background);
 
+    }
+    private void setAIBackground(){
 
+        switch(Config.getGameType()){
+            case PLAYER_VS_PLAYER -> {return;}
+            case PLAYER_VS_AI -> {if(!color) return;}
+        }
+
+        try{
+            Image image = new Image(getClass().getResource("/images/circuitBoard.png").toExternalForm());
+            ImageView imageView = new ImageView(image);
+            imageView.setFitHeight(560);
+            imageView.setFitWidth(220);
+            imageView.setOpacity(0.15);
+            stackPane.getChildren().add(imageView);
+            imageView.setPreserveRatio(true);
+            forfeit.setOpacity(0);
+            skip.setOpacity(0);
+        }catch (Exception e){
+            System.out.println("AI image error");
+
+        }
     }
     public void setTurn(boolean turn){
         if(turn){
