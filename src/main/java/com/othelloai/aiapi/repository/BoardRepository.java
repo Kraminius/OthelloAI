@@ -29,4 +29,6 @@ public class BoardRepository {
     public void setChoice(int x, int y, boolean player, Callback callback) {
         Config.getController().setChoice(x, y, player, callback);
     }
+
+    public void setAIProgressText(int progress, int end) {Config.getController().updateAIProgress(progress, end);}
 }

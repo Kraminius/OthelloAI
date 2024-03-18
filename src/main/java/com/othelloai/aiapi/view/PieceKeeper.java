@@ -2,6 +2,7 @@ package com.othelloai.aiapi.view;
 
 import com.othelloai.aiapi.controller.OthelloController;
 import com.othelloai.aiapi.model.Config;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,6 +17,8 @@ import java.net.URL;
 
 
 public class PieceKeeper extends HBox {
+    Label AIProgressLabel = new Label();
+
     private final String aiStyle = "-fx-content-display: top;-fx-border-width: 2; -fx-border-color: "+Colors.DARKER.getValue()+"; -fx-background-radius: 0;-fx-background-image: url('../../../../../resources/images/circuitBoard.png'); -fx-background-repeat: stretch; -fx-background-size: 1000 700; -fx-background-position: center center;";
     private final String defaultStyle = "-fx-content-display: top;-fx-border-width: 2; -fx-border-color: "+Colors.DARKER.getValue()+"; -fx-background-radius: 0;-fx-background-color:" + Colors.DARKER.getValue();
 
@@ -26,6 +29,8 @@ public class PieceKeeper extends HBox {
     private OthelloController controller;
     private Button skip;
     private Button forfeit;
+
+    private Label progress;
     private VBox holder;
     private StackPane stackPane;
 
@@ -42,9 +47,17 @@ public class PieceKeeper extends HBox {
         forfeit = new Button();
         Label labelSkip = new Label("Skip");
         Label labelForfeit = new Label("Forfeit");
+        progress = new Label("Progress");
         skip.setGraphic(labelSkip);
         forfeit.setGraphic(labelForfeit);
         labelSkip.setStyle("-fx-text-fill: " + Colors.WHITE.getValue() + "; -fx-font-weight: bold; -fx-font-size: 6");
+        progress.setStyle("-fx-text-fill: " + Colors.WHITE.getValue() + "; -fx-font-weight: bold; -fx-font-size: 6");
+        progress.setScaleX(2);
+        progress.setScaleY(2);
+        progress.setMaxHeight(20);
+        progress.setPrefHeight(20);
+        progress.setMaxWidth(400);
+        progress.setAlignment(Pos.CENTER);
         labelSkip.setMaxHeight(20);
         labelSkip.setScaleX(2);
         labelSkip.setScaleY(2);
@@ -78,8 +91,11 @@ public class PieceKeeper extends HBox {
         background.setPrefWidth(220);
         setOnMouseClicked(e -> clicked());
         switch (Config.getGameType()){
-            case AI_VS_AI -> setDisable(true);
-            case PLAYER_VS_AI -> {if(color) setDisable(true);}
+            case AI_VS_AI -> {
+                setDisable(true);
+                buttons.getChildren().add(progress);
+            }
+            case PLAYER_VS_AI -> {if(color) setDisable(true); buttons.getChildren().add(progress);}
         }
         setStyle(defaultStyle);
 
@@ -100,7 +116,7 @@ public class PieceKeeper extends HBox {
             imageView.setFitHeight(560);
             imageView.setFitWidth(220);
             imageView.setOpacity(0.15);
-            stackPane.getChildren().add(imageView);
+            stackPane.getChildren().addAll(imageView, AIProgressLabel);
             imageView.setPreserveRatio(true);
             forfeit.setOpacity(0);
             skip.setOpacity(0);
@@ -141,6 +157,7 @@ public class PieceKeeper extends HBox {
         popup.setChoices(new String[]{"Forfeit", "Cancel"});
         if(popup.showAndAwaitAnswer().equals("Forfeit")) controller.Forfeit();
     }
+
     public void clicked(){
         controller.pieceKeeperClicked(color);
     }
@@ -165,5 +182,10 @@ public class PieceKeeper extends HBox {
         pane.getChildren().add(round);
         round.setTranslateY(pane.getChildren().size()*(420.0 /amount)-420.0/2);
     }
+
+    public void setAIProgressLabel(String text){
+        Platform.runLater(() -> progress.setText(text));
+    }
+
 
 }

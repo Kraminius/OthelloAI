@@ -2,6 +2,7 @@ package com.othelloai.aiapi.controller;
 
 import com.othelloai.aiapi.model.BoardResponse;
 import com.othelloai.aiapi.model.Config;
+import com.othelloai.aiapi.model.GameType;
 import com.othelloai.aiapi.model.OthelloLogic;
 import com.othelloai.aiapi.view.*;
 import javafx.application.Platform;
@@ -246,6 +247,16 @@ public class OthelloController {
         System.out.println("he");
         return toReturn;
     }
+
+    public void updateAIProgress(int progress, int end) {
+        String text = "Iteration: " + progress + " of " + end;
+        System.out.println(text);
+        if (Config.getTurn() && (Config.getGameType().equals(GameType.PLAYER_VS_AI))) right.setAIProgressLabel(text);
+        else if (!Config.getTurn() && (Config.getGameType().equals(GameType.AI_VS_AI))) {left.setAIProgressLabel(text);}
+
+        if (progress >= (end*0.9)) right.setAIProgressLabel("Waiting...");
+    }
+
     private Piece[][] getPiecesFromIntArr(int[][] array){
         int width = array.length;
         int height = array[0].length;

@@ -78,9 +78,7 @@ public class BoardService {
 
     @PostMapping("/AIStatus/{i}/{total}")
     public ResponseEntity<String> getStatusFromAI(@PathVariable("i") int i, @PathVariable("total") int total){
-        int from = i;
-        int to = total;
-
+        boardRepository.setAIProgressText(i, total);
 
 
         return ResponseEntity.ok().body("Thanks bro");
