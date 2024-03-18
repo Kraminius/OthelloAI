@@ -76,9 +76,9 @@ public class BoardService {
         return ResponseEntity.ok().body(turn == player);
     }
 
-    @PostMapping("/AIStatus/{i}/{total}")
-    public ResponseEntity<String> getStatusFromAI(@PathVariable("i") int i, @PathVariable("total") int total){
-        boardRepository.setAIProgressText(i, total);
+    @PostMapping("/AIStatus/{i}/{total}/{player}")
+    public ResponseEntity<String> getStatusFromAI(@PathVariable("i") int i, @PathVariable("total") int total, @PathVariable("player") boolean player){
+        boardRepository.setAIProgressText(i, total, player);
 
 
         return ResponseEntity.ok().body("Thanks bro");

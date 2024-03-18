@@ -29,10 +29,10 @@ public class Board extends GridPane {
         int middleX = pieces.length/2-1;
         int middleY = pieces[0].length/2-1;
 
-        pieces[middleX][middleY].setColor(true);
-        pieces[middleX+1][middleY].setColor(false);
-        pieces[middleX][middleY+1].setColor(false);
-        pieces[middleX+1][middleY+1].setColor(true);
+        pieces[middleX][middleY].setColor(false);
+        pieces[middleX+1][middleY].setColor(true);
+        pieces[middleX][middleY+1].setColor(true);
+        pieces[middleX+1][middleY+1].setColor(false);
 
     }
     public Piece[][] getPieces(){

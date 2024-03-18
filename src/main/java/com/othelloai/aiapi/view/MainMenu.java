@@ -10,6 +10,8 @@ import javafx.scene.control.Menu;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
+
 public class MainMenu extends VBox {
     private MenuController controller;
     private Popup howToPlayScreen;
@@ -59,11 +61,39 @@ public class MainMenu extends VBox {
         });
         aiButton.setOnMousePressed(e->{
             Config.setGameType(GameType.PLAYER_VS_AI);
-            String batFilePath = ""
+            String rustFilePath = "src/main/java/com/othelloai/aiapi/rusty_othello_ai.exe";
+            String argument = "false";
+            ProcessBuilder runRustAI = new ProcessBuilder(rustFilePath, argument);
+
+            new Thread(() -> { try {
+                runRustAI.start();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }}).start();
+
+
             controller.close();
         });
         totalAiButton.setOnMousePressed(e->{
             Config.setGameType(GameType.AI_VS_AI);
+
+            String rustAI = "src/main/java/com/othelloai/aiapi/rusty_othello_ai.exe";
+            String argumentFalse = "false";
+            String argumentTrue = "true";
+
+            ProcessBuilder runRustAIFalse = new ProcessBuilder(rustAI, argumentFalse);
+            ProcessBuilder runRustAITrue = new ProcessBuilder(rustAI, argumentTrue);
+            new Thread(() -> { try {
+                runRustAITrue.start();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }}).start();
+            new Thread(() -> { try {
+                runRustAIFalse.start();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }}).start();
+
             controller.close();
         });
         howToPlayButton.setOnMousePressed(e->{
