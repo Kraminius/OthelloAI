@@ -272,11 +272,10 @@ public class OthelloController {
     public void updateAIProgress(int progress, int end, boolean player) {
         String text = progress + " of " + end;
         System.out.println(text);
-        if (Config.getTurn() && (Config.getGameType().equals(GameType.PLAYER_VS_AI))) right.setAIProgressLabel(text);
-        else if (!player && (Config.getGameType().equals(GameType.AI_VS_AI))) {left.setAIProgressLabel(text);}
-        else if (player && (Config.getGameType().equals(GameType.AI_VS_AI))) {right.setAIProgressLabel(text);}
+        if (Config.getTurn() && (Config.getGameType().equals(GameType.PLAYER_VS_AI))) {right.setAIProgressLabel(text); right.setAIProgressLabel("Waiting...");}
+        else if (!player && (Config.getGameType().equals(GameType.AI_VS_AI))) {left.setAIProgressLabel(text); left.setAIProgressLabel("Waiting...");}
+        else if (player && (Config.getGameType().equals(GameType.AI_VS_AI))) {right.setAIProgressLabel(text); right.setAIProgressLabel("Waiting...");}
 
-        if (progress >= (end*0.9)) right.setAIProgressLabel("Waiting...");
     }
 
     private Piece[][] getPiecesFromIntArr(int[][] array){
