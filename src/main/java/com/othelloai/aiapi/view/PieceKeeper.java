@@ -38,6 +38,7 @@ public class PieceKeeper extends HBox {
         stackPane = new StackPane();
         HBox background = new HBox();
         getChildren().add(stackPane);
+        StackPane buttonLayering = new StackPane();
         this.controller = controller;
         this.pieceSize = pieceSize;
         this.color = color;
@@ -51,13 +52,17 @@ public class PieceKeeper extends HBox {
         skip.setGraphic(labelSkip);
         forfeit.setGraphic(labelForfeit);
         labelSkip.setStyle("-fx-text-fill: " + Colors.WHITE.getValue() + "; -fx-font-weight: bold; -fx-font-size: 6");
-        progress.setStyle("-fx-text-fill: " + Colors.WHITE.getValue() + "; -fx-font-weight: bold; -fx-font-size: 6");
+        progress.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 11");
         progress.setScaleX(2);
         progress.setScaleY(2);
+        progress.setTranslateY(20);
         progress.setMaxHeight(20);
         progress.setPrefHeight(20);
-        progress.setMaxWidth(400);
+        progress.setMaxWidth(800);
         progress.setAlignment(Pos.CENTER);
+        buttons.setTranslateX(5);
+        buttons.setTranslateY(10);
+        buttonLayering.getChildren().addAll(progress, buttons);
         labelSkip.setMaxHeight(20);
         labelSkip.setScaleX(2);
         labelSkip.setScaleY(2);
@@ -71,9 +76,8 @@ public class PieceKeeper extends HBox {
         forfeit.setMaxHeight(20);
         buttons.getChildren().addAll(skip, forfeit);
         buttons.setSpacing(5);
-        holder.getChildren().add(buttons);
+        holder.getChildren().add(buttonLayering);
         holder.setFillWidth(true);
-        buttons.setTranslateY(10);
         skip.setStyle("-fx-background-color: " + Colors.DARK.getValue() + "; -fx-border-color: " + Colors.DARKER.getValue());
         forfeit.setStyle("-fx-background-color: " + Colors.DARK.getValue() + "; -fx-border-color: " + Colors.DARKER.getValue());
         skip.setOnAction(e->skipPressed());
@@ -88,15 +92,18 @@ public class PieceKeeper extends HBox {
         background.setPrefWidth(220);
         setAlignment(Pos.CENTER);
         setOnMouseClicked(e -> clicked());
+
         background.setPrefWidth(220);
         setOnMouseClicked(e -> clicked());
         switch (Config.getGameType()){
-            case AI_VS_AI -> {
-                setDisable(true);
-                buttons.getChildren().add(progress);
+            case AI_VS_AI -> setDisable(true);
+            case PLAYER_VS_AI -> {
+                if(color) setDisable(true);
+                else buttonLayering.getChildren().remove(progress);
             }
-            case PLAYER_VS_AI -> {if(color) setDisable(true); buttons.getChildren().add(progress);}
+            case PLAYER_VS_PLAYER -> buttonLayering.getChildren().remove(progress);
         }
+
         setStyle(defaultStyle);
 
         setAIBackground();

@@ -15,7 +15,7 @@ public class HelloApplication extends Application {
         othelloStage.setTitle("Othello AI");
         boolean running = true;
         while (running){
-            OthelloController controller = new OthelloController(othelloStage, null); //ToDo// Implement a loader and saver of previous games. feeding an ArrayList<int[][]> here will display a previous game.
+            OthelloController controller = new OthelloController(othelloStage, null);
             running = controller.show(othelloStage);
         }
     }
