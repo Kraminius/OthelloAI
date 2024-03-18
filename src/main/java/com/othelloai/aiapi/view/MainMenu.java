@@ -59,6 +59,7 @@ public class MainMenu extends VBox {
         });
         aiButton.setOnMousePressed(e->{
             Config.setGameType(GameType.PLAYER_VS_AI);
+            String batFilePath = ""
             controller.close();
         });
         totalAiButton.setOnMousePressed(e->{
