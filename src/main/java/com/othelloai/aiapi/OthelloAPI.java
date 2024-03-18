@@ -15,4 +15,5 @@ public class OthelloAPI {
         // Start JavaFX application on its own thread
         new Thread(() -> HelloApplication.launchApplication(new String[0])).start();
     }
+
 }

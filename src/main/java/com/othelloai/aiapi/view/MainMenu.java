@@ -3,11 +3,8 @@ package com.othelloai.aiapi.view;
 import com.othelloai.aiapi.controller.MenuController;
 import com.othelloai.aiapi.model.Config;
 import com.othelloai.aiapi.model.GameType;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -15,6 +12,8 @@ import java.io.IOException;
 public class MainMenu extends VBox {
     private MenuController controller;
     private Popup howToPlayScreen;
+
+    private Process[] processes;
     public MainMenu(MenuController controller){
         this.controller = controller;
         setStyle("-fx-background-color: " + Colors.DARK.getValue() + "; -fx-alignment: center");
@@ -63,10 +62,10 @@ public class MainMenu extends VBox {
             Config.setGameType(GameType.PLAYER_VS_AI);
             String rustFilePath = "src/main/java/com/othelloai/aiapi/rusty_othello_ai.exe";
             String argument = "false";
-            ProcessBuilder runRustAI = new ProcessBuilder(rustFilePath, argument);
-
+            processes =new Process[1];
+            ProcessBuilder process = new ProcessBuilder(rustFilePath, argument);
             new Thread(() -> { try {
-                runRustAI.start();
+                processes[0] = process.start();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }}).start();
@@ -80,16 +79,18 @@ public class MainMenu extends VBox {
             String rustAI = "src/main/java/com/othelloai/aiapi/rusty_othello_ai.exe";
             String argumentFalse = "false";
             String argumentTrue = "true";
+            processes =new Process[2];
+            ProcessBuilder processFalse = new ProcessBuilder(rustAI, argumentFalse);
+            ProcessBuilder processTrue = new ProcessBuilder(rustAI, argumentTrue);
 
-            ProcessBuilder runRustAIFalse = new ProcessBuilder(rustAI, argumentFalse);
-            ProcessBuilder runRustAITrue = new ProcessBuilder(rustAI, argumentTrue);
+
             new Thread(() -> { try {
-                runRustAITrue.start();
+                processes[0] = processFalse.start();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }}).start();
             new Thread(() -> { try {
-                runRustAIFalse.start();
+                processes[1] = processTrue.start();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }}).start();
@@ -102,6 +103,9 @@ public class MainMenu extends VBox {
 
 
         return vBox;
+    }
+    public Process[] getProcesses(){
+        return processes;
     }
 
 }

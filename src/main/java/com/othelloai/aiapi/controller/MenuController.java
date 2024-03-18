@@ -1,26 +1,25 @@
 package com.othelloai.aiapi.controller;
 
-import com.othelloai.aiapi.view.ButtonBar;
-import com.othelloai.aiapi.view.Colors;
 import com.othelloai.aiapi.view.MainMenu;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MenuController {
 
     private Stage stage;
+    private MainMenu menu;
 
     public MenuController(Stage stage){
-        Scene scene = new Scene(new MainMenu(this), 600, 600);
+        menu = new MainMenu(this);
+        Scene scene = new Scene(menu, 600, 600);
         stage.setTitle("Othello Menu");
         stage.setScene(scene);
         this.stage = stage;
         stage.setOnCloseRequest(e->System.exit(0));
         stage.showAndWait();
+    }
+    public Process[] getThreads(){
+        return menu.getProcesses();
     }
     public void close(){
         stage.close();

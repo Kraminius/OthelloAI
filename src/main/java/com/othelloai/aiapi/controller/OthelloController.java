@@ -1,6 +1,5 @@
 package com.othelloai.aiapi.controller;
 
-import com.othelloai.aiapi.model.BoardResponse;
 import com.othelloai.aiapi.model.Config;
 import com.othelloai.aiapi.model.GameType;
 import com.othelloai.aiapi.model.OthelloLogic;
@@ -36,11 +35,13 @@ public class OthelloController {
 
     private Round inHand;
     private StackPane layers;
+    private Process[] processes;
 
     public OthelloController(Stage stage, ArrayList<int[][]> game){
         this.stage = stage;
         Config.setOthelloController(this);
         mainMenu(new Stage());
+
         initiateBoard(game);
 
     }
@@ -77,8 +78,14 @@ public class OthelloController {
             popup.setChoices(new String[]{"Exit to Menu", "Exit Program", "Cancel"});
             String answer = popup.showAndAwaitAnswer();
             switch (answer){
-                case "Exit to Menu" -> stage.close();
-                case "Exit Program" -> System.exit(0);
+                case "Exit to Menu" -> {
+                    stage.close();
+                    closeThreads();
+                }
+                case "Exit Program" -> {
+                    closeThreads();
+                    System.exit(0);
+                }
                 default -> e.consume();
             }
 
@@ -87,6 +94,18 @@ public class OthelloController {
         left.setTurn(!Config.getTurn());
         right.setTurn(Config.getTurn());
     }
+    private void closeThreads(){
+        try{
+            if(processes != null) {
+                for(Process process : processes){
+                    process.destroy();
+                    process.waitFor();
+                }
+            }
+        }catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+        }
+    }
 
     public boolean show(Stage stage){
         stage.showAndWait();
@@ -94,7 +113,7 @@ public class OthelloController {
     }
     private void mainMenu(Stage stage){
         MenuController menu = new MenuController(stage);
-
+        processes = menu.getThreads();
     }
     private void moveNodeInHand(MouseEvent event){
         if(inHand == null) return;
@@ -126,6 +145,7 @@ public class OthelloController {
         buttonBar.showBackward(true);
         updateLast(piece);
         removeFutureHistory();
+        checkForWin();
         return true;
     }
     private void removeFutureHistory(){
@@ -220,6 +240,7 @@ public class OthelloController {
                 buttonBar.showForward(false);
                 buttonBar.showBackward(true);
                 removeFutureHistory();
+                checkForWin();
 
                 callback.onSuccess();
             } catch (Exception e) {
@@ -310,7 +331,30 @@ public class OthelloController {
         popup.setText("Congratulations " + winner + " Wins!\n" + looser + " has forfeit.");
         popup.setChoices(new String[]{"Return to Menu", "Study Game Instead", "Restart Game"});
         switch (popup.showAndAwaitAnswer()) {
-            case "Return to Menu" -> stage.close();
+            case "Return to Menu" -> {
+                stage.close();
+                closeThreads();
+            }
+            case "Restart Game" -> initiateBoard(null);
+        }
+    }
+    public void checkForWin(){
+        scores = OthelloLogic.getScore(board.getPieces());
+        if(scores[0] + scores[1] != 64) return;
+        String winnerText = "";
+        if(scores[0] > scores[1]) winnerText = "White Wins!";
+        else if(scores[0] < scores[1]) winnerText = "Black Wins!";
+        else winnerText = "It's a Tie!";
+        Popup popup = new Popup(600, 300);
+        popup.setTitle(winnerText);
+        popup.setHeading(winnerText);
+        popup.setText("Congratulations " + winnerText + " The Game Is Now Over!");
+        popup.setChoices(new String[]{"Return to Menu", "Study Game Instead", "Restart Game"});
+        switch (popup.showAndAwaitAnswer()) {
+            case "Return to Menu" -> {
+                stage.close();
+                closeThreads();
+            }
             case "Restart Game" -> initiateBoard(null);
         }
     }
