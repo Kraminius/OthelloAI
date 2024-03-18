@@ -41,7 +41,7 @@ public class MainMenu extends VBox {
         VBox totalAiButton = new VBox(totalAiLabel);
         Label howToPlay = new Label("How To Play");
         VBox howToPlayButton = new VBox(howToPlay);
-        vBox.getChildren().addAll(playersButton, aiButton, totalAiButton, howToPlayButton);
+        vBox.getChildren().addAll(playersButton, aiButton, totalAiButton);
         for(Node box : vBox.getChildren()){
 
             box.setStyle("-fx-background-color: " + Colors.DARK.getValue() + ";-fx-border-color: " + Colors.WHITE.getValue() + "; -fx-border-width: 2; -fx-alignment: center");
